@@ -3,6 +3,7 @@ package com.example.deliveryapi.auth.configurations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -17,16 +18,18 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
                 .inMemory()
                 .withClient("postman")
-                .authorizedGrantTypes("password")
+                .authorizedGrantTypes("password", "refresh_token")
                 .secret(passwordEncoder.encode("postman123"))
                 .scopes("read", "write")
-                .accessTokenValiditySeconds(60*60*4)
+                .accessTokenValiditySeconds(60 * 60 * 4) //4 Horas
+                .refreshTokenValiditySeconds(60 * 60 * 12) //12 Horas
                 .and()
                 .withClient("resourceserver")
                 .secret(passwordEncoder.encode("resourceserver321"));
@@ -40,6 +43,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.authenticationManager(authenticationManager);
+        endpoints.authenticationManager(authenticationManager)
+                .userDetailsService(userDetailsService)
+                .reuseRefreshTokens(false);
     }
 }
