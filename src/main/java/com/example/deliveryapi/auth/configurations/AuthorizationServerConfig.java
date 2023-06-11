@@ -38,7 +38,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                     .secret(passwordEncoder.encode("outra123"))
                     .authorizedGrantTypes("client_credentials")
                     .scopes("read", "write")
-        ;
+                .and()
+                    .withClient("appAnalytics")
+                    .authorizedGrantTypes("authorization_code","refresh_token")
+                    .secret(passwordEncoder.encode("analytics123"))
+                    .scopes("read", "write")
+                    .redirectUris("http://analyticsapp/");
     }
 
     @Override
