@@ -24,15 +24,21 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
                 .inMemory()
-                .withClient("postman")
-                .authorizedGrantTypes("password", "refresh_token")
-                .secret(passwordEncoder.encode("postman123"))
-                .scopes("read", "write")
-                .accessTokenValiditySeconds(60 * 60 * 4) //4 Horas
-                .refreshTokenValiditySeconds(60 * 60 * 12) //12 Horas
+                    .withClient("postman")
+                    .authorizedGrantTypes("password", "refresh_token")
+                    .secret(passwordEncoder.encode("postman123"))
+                    .scopes("read", "write")
+                    .accessTokenValiditySeconds(60 * 60 * 4) //4 Horas
+                    .refreshTokenValiditySeconds(60 * 60 * 12) //12 Horas
                 .and()
-                .withClient("resourceserver")
-                .secret(passwordEncoder.encode("resourceserver321"));
+                    .withClient("resourceserver")
+                    .secret(passwordEncoder.encode("resourceserver321"))
+                .and()
+                    .withClient("outraAplicacao")
+                    .secret(passwordEncoder.encode("outra123"))
+                    .authorizedGrantTypes("client_credentials")
+                    .scopes("read", "write")
+        ;
     }
 
     @Override
