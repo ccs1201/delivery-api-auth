@@ -47,7 +47,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .and()
                     .withClient("appAnalytics")
                         .authorizedGrantTypes("authorization_code", "refresh_token")
-                            .secret(passwordEncoder.encode("analytics123"))
+                            .secret(passwordEncoder.encode("appAnalytics123"))
                                 .scopes("read", "write")
                                     .redirectUris("http://analyticsapp")
                 .and()
@@ -60,7 +60,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.checkTokenAccess("isAuthenticated()");
+        security.checkTokenAccess("isAuthenticated()")
+                .allowFormAuthenticationForClients();
 //        security.checkTokenAccess("permitAll()");
     }
 
