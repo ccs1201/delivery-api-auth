@@ -2,8 +2,8 @@ package com.example.deliveryapi.auth.configurations;
 
 import com.example.deliveryapi.auth.PkceAuthorizationCodeTokenGranter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,8 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import java.util.Arrays;
 
@@ -27,38 +26,38 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-    private final RedisConnectionFactory redisConnectionFactory;
+//    private final RedisConnectionFactory redisConnectionFactory;
 
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
                 .inMemory()
-                    .withClient("postman")
-                        .authorizedGrantTypes("password", "refresh_token")
-                            .secret(passwordEncoder.encode("postman123"))
-                                .scopes("read", "write")
-                                    .accessTokenValiditySeconds(60 * 60 * 4) //4 Horas
-                                        .refreshTokenValiditySeconds(60 * 60 * 12) //12 Horas
+                .withClient("postman")
+                .authorizedGrantTypes("password", "refresh_token")
+                .secret(passwordEncoder.encode("postman123"))
+                .scopes("read", "write")
+                .accessTokenValiditySeconds(60 * 60 * 4) //4 Horas
+                .refreshTokenValiditySeconds(60 * 60 * 12) //12 Horas
                 .and()
-                        .withClient("resourceserver")
-                            .secret(passwordEncoder.encode("resourceserver321"))
+                .withClient("resourceserver")
+                .secret(passwordEncoder.encode("resourceserver321"))
                 .and()
-                    .withClient("outraAplicacao")
-                            .secret(passwordEncoder.encode("outra123"))
-                                .authorizedGrantTypes("client_credentials")
-                                    .scopes("read", "write")
+                .withClient("outraAplicacao")
+                .secret(passwordEncoder.encode("outra123"))
+                .authorizedGrantTypes("client_credentials")
+                .scopes("read", "write")
                 .and()
-                    .withClient("appAnalytics")
-                        .authorizedGrantTypes("authorization_code", "refresh_token")
-                            .secret(passwordEncoder.encode("appAnalytics123"))
-                                .scopes("read", "write")
-                                    .redirectUris("http://analyticsapp")
+                .withClient("appAnalytics")
+                .authorizedGrantTypes("authorization_code", "refresh_token")
+                .secret(passwordEncoder.encode("appAnalytics123"))
+                .scopes("read", "write")
+                .redirectUris("http://analyticsapp")
                 .and()
-                    .withClient("implicitGrantClient")
-                        .authorizedGrantTypes("implicit")
-                            .scopes("read", "write")
-                                .redirectUris("http://implicitGrantClient");
+                .withClient("implicitGrantClient")
+                .authorizedGrantTypes("implicit")
+                .scopes("read", "write")
+                .redirectUris("http://implicitGrantClient");
 
     }
 
@@ -69,18 +68,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //        security.checkTokenAccess("permitAll()");
     }
 
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        var jwt = new JwtAccessTokenConverter();
+        jwt.setSigningKey("deliveryapi");
+        return jwt;
+    }
+
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
                 .reuseRefreshTokens(false)
-                .tokenStore(redisTokenStore())
+//                .tokenStore(redisTokenStore())
+                .accessTokenConverter(jwtAccessTokenConverter())
                 .tokenGranter(tokenGranter(endpoints));
     }
 
-    private TokenStore redisTokenStore(){
-        return new RedisTokenStore(redisConnectionFactory);
-    }
+//    private TokenStore redisTokenStore(){
+//        return new RedisTokenStore(redisConnectionFactory);
+//    }
 
     private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
         var pkceAuthorizationCodeTokenGranter = new PkceAuthorizationCodeTokenGranter(endpoints.getTokenServices(),
