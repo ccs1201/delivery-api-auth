@@ -26,6 +26,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private static final String SECRET = "QS1zyuuDIHklis01*n15%PLVLaR64@Xj";
 //    private final RedisConnectionFactory redisConnectionFactory;
 
 
@@ -71,7 +72,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         var jwt = new JwtAccessTokenConverter();
-        jwt.setSigningKey("deliveryapi");
+        jwt.setSigningKey(SECRET);
         return jwt;
     }
 
