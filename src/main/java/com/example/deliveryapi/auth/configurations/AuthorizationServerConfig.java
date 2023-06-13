@@ -4,6 +4,7 @@ import com.example.deliveryapi.auth.PkceAuthorizationCodeTokenGranter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import java.util.Arrays;
 
@@ -23,12 +25,11 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
+    private static final String SECRET = "QS1zyuuDIHklis01*n15%PLVLaR64@Xj";
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-    private static final String SECRET = "QS1zyuuDIHklis01*n15%PLVLaR64@Xj";
 //    private final RedisConnectionFactory redisConnectionFactory;
-
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -72,7 +73,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         var jwt = new JwtAccessTokenConverter();
-        jwt.setSigningKey(SECRET);
+//        jwt.setSigningKey(SECRET); para assinatura simétrica
+
+        var jksResource = new ClassPathResource("keystore/deliveryapi.jks");
+        var keystorePass = "123456";
+        var keyParlias = "deliveryapi";
+
+        var keyStoreFactory = new KeyStoreKeyFactory(jksResource, keystorePass.toCharArray());
+        var keyPair = keyStoreFactory.getKeyPair(keyParlias);
+
+        jwt.setKeyPair(keyPair);
+
         return jwt;
     }
 
