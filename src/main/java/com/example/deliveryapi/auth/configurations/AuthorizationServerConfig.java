@@ -29,6 +29,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final JwtKeyProperties jwtKeyProperties;
 //    private final RedisConnectionFactory redisConnectionFactory;
 
     @Override
@@ -75,12 +76,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         var jwt = new JwtAccessTokenConverter();
 //        jwt.setSigningKey(SECRET); para assinatura simétrica
 
-        var jksResource = new ClassPathResource("keystore/deliveryapi.jks");
-        var keystorePass = "123456";
-        var keyParlias = "deliveryapi";
+        var jksResource = new ClassPathResource(jwtKeyProperties.getPath());
 
-        var keyStoreFactory = new KeyStoreKeyFactory(jksResource, keystorePass.toCharArray());
-        var keyPair = keyStoreFactory.getKeyPair(keyParlias);
+        var keyStoreFactory = new KeyStoreKeyFactory(jksResource, jwtKeyProperties.getPassword().toCharArray());
+        var keyPair = keyStoreFactory.getKeyPair(jwtKeyProperties.getKeyPairAlias());
 
         jwt.setKeyPair(keyPair);
 
