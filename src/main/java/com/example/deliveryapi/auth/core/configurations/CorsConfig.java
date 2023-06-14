@@ -1,4 +1,4 @@
-package com.example.deliveryapi.auth.configurations;
+package com.example.deliveryapi.auth.core.configurations;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

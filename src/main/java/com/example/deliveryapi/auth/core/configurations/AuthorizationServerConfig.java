@@ -1,4 +1,4 @@
-package com.example.deliveryapi.auth.configurations;
+package com.example.deliveryapi.auth.core.configurations;
 
 import com.example.deliveryapi.auth.PkceAuthorizationCodeTokenGranter;
 import lombok.RequiredArgsConstructor;
