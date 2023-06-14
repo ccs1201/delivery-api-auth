@@ -15,6 +15,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.approval.ApprovalStore;
+import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
@@ -94,7 +97,19 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .reuseRefreshTokens(false)
 //                .tokenStore(redisTokenStore())
                 .accessTokenConverter(jwtAccessTokenConverter())
+                .approvalStore(approvalStore(endpoints.getTokenStore()))
                 .tokenGranter(tokenGranter(endpoints));
+    }
+
+    /**
+     * <p>Habilita a aprovação granular de escopos com uso de JWT</p>
+     * Módulo 23.13
+     */
+    private ApprovalStore approvalStore(TokenStore tokenStore) {
+
+        var aprovalStore = new TokenApprovalStore();
+        aprovalStore.setTokenStore(tokenStore);
+        return aprovalStore;
     }
 
 //    private TokenStore redisTokenStore(){
