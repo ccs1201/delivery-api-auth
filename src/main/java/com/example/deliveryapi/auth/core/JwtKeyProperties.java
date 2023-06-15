@@ -1,4 +1,4 @@
-package com.example.deliveryapi.auth.core.configurations;
+package com.example.deliveryapi.auth.core;
 
 import lombok.Getter;
 import lombok.Setter;

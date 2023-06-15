@@ -1,7 +1,5 @@
-package com.example.deliveryapi.auth.core.service;
+package com.example.deliveryapi.auth.domain;
 
-import com.example.deliveryapi.auth.core.domain.entity.AuthUser;
-import com.example.deliveryapi.auth.core.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

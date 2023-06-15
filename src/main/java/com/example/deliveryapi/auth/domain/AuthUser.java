@@ -1,4 +1,4 @@
-package com.example.deliveryapi.auth.core.domain.entity;
+package com.example.deliveryapi.auth.domain;
 
 import lombok.Getter;
 import org.springframework.security.core.userdetails.User;

@@ -1,6 +1,5 @@
-package com.example.deliveryapi.auth.core.domain.repository;
+package com.example.deliveryapi.auth.domain;
 
-import com.example.deliveryapi.auth.core.domain.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.example.deliveryapi.auth.core.domain.entity;
+package com.example.deliveryapi.auth.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
