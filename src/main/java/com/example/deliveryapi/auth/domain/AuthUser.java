@@ -9,10 +9,12 @@ import java.util.List;
 public class AuthUser extends User {
 
     private String nomeCompleto;
+    private Long userId;
 
     public AuthUser(Usuario usuario) {
-        super(usuario.getNome(), usuario.getSenha(), List.of());
+        super(usuario.getEmail(), usuario.getSenha(), List.of());
         nomeCompleto = usuario.getNome();
+        userId = usuario.getId();
     }
 
 }
